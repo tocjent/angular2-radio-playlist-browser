@@ -5,12 +5,12 @@
     "experimentalDecorators": true,
     "mapRoot": "",
     "module": "system",
-    "moduleResolution": "node",
     "noEmitOnError": true,
     "noImplicitAny": false,
     "rootDir": ".",
     "sourceMap": true,
     "sourceRoot": "/",
-    "target": "es5"
+    "target": "es5",
+    "compileOnSave": false
   }
 }
