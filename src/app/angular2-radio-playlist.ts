@@ -15,7 +15,10 @@ export class Angular2RadioPlaylistApp {
   songs: Song[];
 
   constructor(songService: SongService) {
-    this.songs = songService.find();
+    songService.find().subscribe(
+      songs => this.songs = songs,
+      err => console.log(err)
+    );
   }
 
   meaningOfLife(meaning) {

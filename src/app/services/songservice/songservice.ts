@@ -1,17 +1,17 @@
 import {Injectable} from 'angular2/core';
+import {Http} from 'angular2/http';
 import {Song} from '../../model/song';
+import 'rxjs/Rx';
+import {Observable} from 'rxjs/Observable';
 
 
 @Injectable()
 export class SongService {
 
-  constructor() {}
+  constructor(private http: Http) {}
 
-  find() {
-    return [
-      new Song('Akcent', 'Przekorny los'),
-      new Song('Duo Night', 'Ekologiczna dziewczyna'),
-      new Song('Medium', 'Każda laska')
-    ];
+  find(): Observable<Song[]> {
+    return this.http.get('/data/songs.json')
+      .map(res => res.json().songs.map(Song.fromObject));
   }
 }

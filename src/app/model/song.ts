@@ -7,4 +7,8 @@ export class Song {
   toString() {
     return this.author + ' - ' + this.title;
   }
+
+  static fromObject(o) {
+    return new Song(o.author, o.title);
+  }
 }
