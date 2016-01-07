@@ -16,8 +16,7 @@ export class Angular2RadioPlaylistApp {
 
   constructor(songService: SongService) {
     songService.find().subscribe(
-      songs => this.songs = songs,
-      err => console.log(err)
+      songs => this.songs = songs
     );
   }
 

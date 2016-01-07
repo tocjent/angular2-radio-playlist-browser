@@ -12,6 +12,7 @@ export class SongService {
 
   find(): Observable<Song[]> {
     return this.http.get('/data/songs.json')
-      .map(res => res.json().songs.map(Song.fromObject));
+      .map(res => res.json().songs.map(Song.fromObject))
+      .catch(err => Observable.of([]));
   }
 }
