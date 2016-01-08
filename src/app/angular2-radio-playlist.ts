@@ -1,6 +1,8 @@
-import {Component, Inject} from 'angular2/core';
+import {Component, Inject, Input} from 'angular2/core';
 import {Song} from './model/song';
 import {SongService} from './services/songservice/songservice';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 
 
 @Component({
@@ -13,14 +15,30 @@ import {SongService} from './services/songservice/songservice';
 export class Angular2RadioPlaylistApp {
   defaultMeaning: number = 42;
   songs: Song[];
+  form = {
+    title: ''
+  };
+  formUpdates = new Subject();
 
   constructor(songService: SongService) {
-    songService.find().subscribe(
-      songs => this.songs = songs
+
+    Observable.combineLatest(
+      this.formUpdates,
+      songService.find()
+    ).subscribe(
+      v => {
+        var form = v[0];
+        var songs = v[1];
+        this.songs = songs.filter(
+          song => song.title.toLowerCase().indexOf(form.title.toLowerCase()) > -1
+        )
+      }
     );
+
+    this.update();
   }
 
-  meaningOfLife(meaning) {
-    return `The meaning of life is ${meaning || this.defaultMeaning}`;
+  update() {
+    this.formUpdates.next(this.form);
   }
 }

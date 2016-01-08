@@ -1,7 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Http} from 'angular2/http';
 import {Song} from '../../model/song';
-import 'rxjs/Rx';
 import {Observable} from 'rxjs/Observable';
 
 

@@ -10,9 +10,7 @@ describe('App: Angular2RadioPlaylist', () => {
 
   describe('#meaningOfLife', () => {
     it('should get the meaning of life', inject([Angular2RadioPlaylistApp], (app) => {
-      expect(app.meaningOfLife()).toBe('The meaning of life is 42');
-      expect(app.meaningOfLife(22)).toBe('The meaning of life is 22');
+      
     }));
   });
 });
-
