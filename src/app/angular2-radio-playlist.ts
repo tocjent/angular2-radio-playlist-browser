@@ -5,7 +5,8 @@ import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
 
-class SearchForm {
+class SearchParams {
+  author = '';
   title = '';
 }
 
@@ -19,24 +20,28 @@ class SearchForm {
 })
 export class Angular2RadioPlaylistApp {
   songs: Song[];
-  form = new SearchForm();
-  formUpdates = new Subject<SearchForm>();
+  searchParams = new SearchParams();
+  searchParamsUpdates = new Subject<SearchParams>();
 
   constructor(songService: SongService) {
+      
+    var validSong = (sp: SearchParams) => (song: Song) => {
+        if(song.author.toLowerCase().indexOf(sp.author.toLowerCase()) == -1) return false;
+        if(song.title.toLowerCase().indexOf(sp.title.toLowerCase()) == -1) return false;
+        return true;
+    };
 
-    Observable.combineLatest<[SearchForm, Song[]]>(
-      this.formUpdates,
+    Observable.combineLatest<[SearchParams, Song[]]>(
+      this.searchParamsUpdates,
       songService.find()
     ).subscribe(
-      ([form, songs]) => this.songs = songs.filter(
-        song => song.title.toLowerCase().indexOf(form.title.toLowerCase()) > -1
-      )
+      ([searchParams, songs]) => this.songs = songs.filter(validSong(searchParams))
     );
 
     this.update();
   }
 
   update() {
-    this.formUpdates.next(this.form);
+    this.searchParamsUpdates.next(this.searchParams);
   }
 }
