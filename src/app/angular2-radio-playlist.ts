@@ -33,7 +33,7 @@ export class Angular2RadioPlaylistApp {
 
     Observable.combineLatest<[SearchParams, Song[]]>(
       this.searchParamsUpdates,
-      songService.find()
+      songService.currentlyPlaying()
     ).subscribe(
       ([searchParams, songs]) => this.songs = songs.filter(validSong(searchParams))
     );

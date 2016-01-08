@@ -2,10 +2,10 @@
 <input [(ngModel)]="searchParams.title" (keyup)="update()" type="text" placeholder="Song title">
 
 <h2>
-  Songs
+  Currently playing
 </h2>
 <ul>
   <li *ngFor="#song of songs">
-    {{song}}
+    <strong>{{song.station}}</strong> {{song}}
   </li>
 </ul>

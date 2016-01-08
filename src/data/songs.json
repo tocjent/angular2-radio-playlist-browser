@@ -1,7 +1,7 @@
 {
     "songs": [
-        {"author": "Akcent", "title": "Przekorny los"},
-        {"author": "Duo Night", "title": "Ekologiczna dziewczyna"},
-        {"author": "Medium", "title": "Każda laska"}
+        {"station": "localhost", "author": "Akcent", "title": "Przekorny los"},
+        {"station": "localhost", "author": "Duo Night", "title": "Ekologiczna dziewczyna"},
+        {"station": "localhost", "author": "Medium", "title": "Każda laska"}
     ]
 }
