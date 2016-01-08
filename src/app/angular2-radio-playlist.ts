@@ -5,6 +5,11 @@ import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 
 
+class SearchForm {
+  title = '';
+}
+
+
 @Component({
   selector: 'angular2-radio-playlist-app',
   providers: [],
@@ -13,26 +18,19 @@ import {Subject} from 'rxjs/Subject';
   pipes: []
 })
 export class Angular2RadioPlaylistApp {
-  defaultMeaning: number = 42;
   songs: Song[];
-  form = {
-    title: ''
-  };
-  formUpdates = new Subject();
+  form = new SearchForm();
+  formUpdates = new Subject<SearchForm>();
 
   constructor(songService: SongService) {
 
-    Observable.combineLatest(
+    Observable.combineLatest<[SearchForm, Song[]]>(
       this.formUpdates,
       songService.find()
     ).subscribe(
-      v => {
-        var form = v[0];
-        var songs = v[1];
-        this.songs = songs.filter(
-          song => song.title.toLowerCase().indexOf(form.title.toLowerCase()) > -1
-        )
-      }
+      ([form, songs]) => this.songs = songs.filter(
+        song => song.title.toLowerCase().indexOf(form.title.toLowerCase()) > -1
+      )
     );
 
     this.update();
