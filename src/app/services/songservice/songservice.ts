@@ -1,7 +1,8 @@
 import {Injectable} from 'angular2/core';
-import {Http} from 'angular2/http';
+import {Http, Response} from 'angular2/http';
 import {Song} from '../../model/song';
 import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import {Json} from 'angular2/src/facade/lang';
 
 
@@ -22,7 +23,10 @@ export class SongService {
       this.eurozetPl('Radio ZET Gold', 'zetgold'),
       this.eurozetPl('AntyRadio', 'antyradio'),
       this.eurozetPl('Planeta FM', 'planeta'),
-      this.radioFaMa('Radio FaMa Kielce', 'kielce')
+      this.radioFaMa('Radio FaMa Kielce', 'kielce'),
+      this.radioFaMa('Radio FaMa Tomaszów Mazowiecki', 'tomaszow'),
+      this.radioFaMa('Radio FaMa Wolomin', 'wolomin'),
+      this.radioFaMa('Radio FaMa Slupsk', 'slupsk')
     ).map(all => [].concat.apply([], all));
   }
   
@@ -33,7 +37,7 @@ export class SongService {
   }
   
   private tubaPl(stationName: string, stationId: number): Observable<Song[]> {
-    return this.http.get('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1')
+    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 20)
       .map(res => res.json().slice(0, 1).map(
         r => new Song(
           stationName,
@@ -45,7 +49,7 @@ export class SongService {
   }
   
   private eurozetPl(stationName: string, stationId: string): Observable<Song[]> {
-    return this.http.get('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json')
+    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 20)
       .map(res => {
         var firstParenPos = res.text().indexOf('(') + 1;
         var jsonText = res.text().slice(firstParenPos, -1);
@@ -60,7 +64,7 @@ export class SongService {
   }
   
   private radioFaMa(stationName: string, stationId: string): Observable<Song[]> {
-    return this.http.get('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt')
+    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 20)
       .map(res => {
         var lines = res.text().split('<br />\n');
         var current = lines.filter(line => line.indexOf('gramy: ') === 0).slice(0, 1);
@@ -74,6 +78,18 @@ export class SongService {
         });
       })
       .catch(this.logErrorAndReturnEmpty);
+  }
+  
+  private repeatedGet(url: string, intervalSeconds: number): Observable<Response> {
+      var sub = new Subject();
+      var getUrl = () => {
+        this.http.get(url).subscribe(res => {
+          sub.next(res);
+          setTimeout(getUrl, intervalSeconds * 1000);
+        });
+      };
+      getUrl();
+      return sub;
   }
   
   private logErrorAndReturnEmpty(err) {
