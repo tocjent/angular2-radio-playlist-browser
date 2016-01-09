@@ -51,9 +51,9 @@ export class SongService {
   private eurozetPl(stationName: string, stationId: string): Observable<Song[]> {
     return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 20)
       .map(res => {
-        let firstParenPos = res.text().indexOf('(') + 1;
-        let jsonText = res.text().slice(firstParenPos, -1);
-        let json = <{now: {artist: string, title: string}}>Json.parse(jsonText);
+        const firstParenPos = res.text().indexOf('(') + 1;
+        const jsonText = res.text().slice(firstParenPos, -1);
+        const json = <{now: {artist: string, title: string}}>Json.parse(jsonText);
         return [new Song(
           stationName,
           json.now.artist,
@@ -66,10 +66,10 @@ export class SongService {
   private radioFaMa(stationName: string, stationId: string): Observable<Song[]> {
     return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 20)
       .map(res => {
-        let lines = res.text().split('<br />\n');
-        let current = lines.filter(line => line.indexOf('gramy: ') === 0).slice(0, 1);
+        const lines = res.text().split('<br />\n');
+        const current = lines.filter(line => line.indexOf('gramy: ') === 0).slice(0, 1);
         return current.map(line => {
-          let artistAndTitle = line.slice('gramy: '.length, -1).split('-');
+          const artistAndTitle = line.slice('gramy: '.length).split('-');
           return new Song(
             stationName,
             artistAndTitle[0],
@@ -81,8 +81,8 @@ export class SongService {
   }
   
   private repeatedGet(url: string, intervalSeconds: number): Observable<Response> {
-      let sub = new Subject();
-      let getUrl = () => {
+      const sub = new Subject();
+      const getUrl = () => {
         this.http.get(url).subscribe(res => {
           sub.next(res);
           setTimeout(getUrl, intervalSeconds * 1000);
