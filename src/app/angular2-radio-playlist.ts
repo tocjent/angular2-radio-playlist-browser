@@ -26,7 +26,7 @@ export class Angular2RadioPlaylistApp {
 
   constructor(songService: SongService) {
     
-    var validSong = (sp: SearchParams) => (song: Song) => {
+    let validSong = (sp: SearchParams) => (song: Song) => {
       if(song.station.toLowerCase().indexOf(sp.station.toLowerCase()) == -1) return false;
       if(song.author.toLowerCase().indexOf(sp.author.toLowerCase()) == -1) return false;
       if(song.title.toLowerCase().indexOf(sp.title.toLowerCase()) == -1) return false;
