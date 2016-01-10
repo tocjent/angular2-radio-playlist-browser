@@ -1,0 +1,7 @@
+{
+    "songs": [
+        {"station": "localhost", "author": "Akcent", "title": "Przekorny los"},
+        {"station": "localhost", "author": "Duo Night", "title": "Ekologiczna dziewczyna"},
+        {"station": "localhost", "author": "Medium", "title": "Każda laska"}
+    ]
+}
