@@ -28,31 +28,23 @@
       <div class="col s12 m10 offset-m1 l8 offset-l2 radio-playlist-card-container">
         <div class="card radio-playlist-card">
           <div class="card-content">
-            <h3>
+            <h4>
               Currently playing
-            </h3>
-            <table>
-              <tr>
-                <th style="width: 33%">
-                  <div class="input-field">
-                    <label for="station_filter">Station</label>
-                    <input id="station_filter" [(ngModel)]="searchParams.station" (keyup)="update()" type="text">
-                  </div>
-                </th>
-                <th style="width: 33%">
-                  <div class="input-field">
-                    <label for="author_filter">Author</label>
-                    <input id="author_filter" [(ngModel)]="searchParams.author" (keyup)="update()" type="text">
-                  </div>
-                </th>
-                <th style="width: 33%">
-                  <div class="input-field">
-                    <label for="title_filter">Song title</label>
-                    <input id="title_filter" [(ngModel)]="searchParams.title" (keyup)="update()" type="text">
-                  </div>
-                </th>
-              </tr>
-            </table>
+            </h4>
+            <div class="row">
+              <div class="col s4 input-field">
+                <label for="station_filter">Station</label>
+                <input id="station_filter" [(ngModel)]="searchParams.station" (keyup)="update()" type="text">
+              </div>
+              <div class="col s4 input-field">
+                <label for="author_filter">Author</label>
+                <input id="author_filter" [(ngModel)]="searchParams.author" (keyup)="update()" type="text">
+              </div>
+              <div class="col s4 input-field">
+                <label for="title_filter">Song title</label>
+                <input id="title_filter" [(ngModel)]="searchParams.title" (keyup)="update()" type="text">
+              </div>
+            </div>
             <div *ngFor="#songStream of songs">
                 <radio-song [songObservable]="songStream"></radio-song>
             </div>
