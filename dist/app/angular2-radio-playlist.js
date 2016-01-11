@@ -39,12 +39,19 @@ System.register(['angular2/core', './services/songservice/songservice', 'rxjs/Ob
                     this.searchParams = new SearchParams();
                     this.searchParamsUpdates = new Subject_1.Subject();
                     var validSong = function (sp) { return function (song) {
-                        var validAttr = function (attrName) { return song[attrName].toLowerCase().indexOf(sp[attrName].toLowerCase()) > -1; };
-                        return validAttr("station") && validAttr("author") && validAttr("title");
+                        var validAttr = function (attrName) {
+                            var songAttr = song[attrName].toLowerCase();
+                            var paramAttr = sp[attrName].toLowerCase();
+                            return songAttr.indexOf(paramAttr) > -1;
+                        };
+                        return ["station", "author", "title"]
+                            .reduce(function (acc, el) { return acc && validAttr(el); }, true);
                     }; };
                     Observable_1.Observable.combineLatest(this.searchParamsUpdates, songService.currentlyPlaying()).subscribe(function (_a) {
                         var searchParams = _a[0], songs = _a[1];
-                        return _this.songs = songs.filter(validSong(searchParams));
+                        return Object.assign(_this, {
+                            songs: songs.filter(validSong(searchParams))
+                        });
                     });
                     this.update();
                 }
