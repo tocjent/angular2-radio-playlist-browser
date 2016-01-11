@@ -18,6 +18,10 @@
   td, th {
     padding: 5px 0 !important;
   }
+
+  .input-field {
+    margin-left: -10px;
+  }
 </style>
 <div class="radio-playlist-container">
     <div class="row">
@@ -30,13 +34,22 @@
             <table>
               <tr>
                 <th style="width: 33%">
-                  <input [(ngModel)]="searchParams.station" (keyup)="update()" type="text" placeholder="Station">
+                  <div class="input-field">
+                    <label for="station_filter">Station</label>
+                    <input id="station_filter" [(ngModel)]="searchParams.station" (keyup)="update()" type="text">
+                  </div>
                 </th>
                 <th style="width: 33%">
-                  <input [(ngModel)]="searchParams.author" (keyup)="update()" type="text" placeholder="Author">
+                  <div class="input-field">
+                    <label for="author_filter">Author</label>
+                    <input id="author_filter" [(ngModel)]="searchParams.author" (keyup)="update()" type="text">
+                  </div>
                 </th>
                 <th style="width: 33%">
-                  <input [(ngModel)]="searchParams.title" (keyup)="update()" type="text" placeholder="Song title">
+                  <div class="input-field">
+                    <label for="title_filter">Song title</label>
+                    <input id="title_filter" [(ngModel)]="searchParams.title" (keyup)="update()" type="text">
+                  </div>
                 </th>
               </tr>
               <tr *ngFor="#song of songs">
