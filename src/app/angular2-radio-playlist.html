@@ -52,12 +52,10 @@
                   </div>
                 </th>
               </tr>
-              <tr *ngFor="#song of songs">
-                <td>{{song.station}}</td>
-                <td>{{song.author}}</td>
-                <td>{{song.title}}</td>
-              </tr>
             </table>
+            <div *ngFor="#songStream of songs">
+                <radio-song [songObservable]="songStream"></radio-song>
+            </div>
           </div>
         </div>
       </div>

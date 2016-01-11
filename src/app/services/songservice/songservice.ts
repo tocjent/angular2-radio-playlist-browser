@@ -11,8 +11,8 @@ export class SongService {
 
   constructor(private http: Http) {}
 
-  currentlyPlaying(): Observable<Song[]> {
-    return Observable.combineLatest(
+  currentlyPlaying(): Observable<Song[]>[] {
+    return [
       this.localFileSongs(),
       this.tubaPl('Zlote przeboje', 9),
       this.tubaPl('Rock Radio', 8),
@@ -27,7 +27,7 @@ export class SongService {
       this.radioFaMa('Radio FaMa Tomaszów Mazowiecki', 'tomaszow'),
       this.radioFaMa('Radio FaMa Wolomin', 'wolomin'),
       this.radioFaMa('Radio FaMa Slupsk', 'slupsk')
-    ).map(all => [].concat.apply([], all));
+    ];
   }
   
   private localFileSongs(): Observable<Song[]> {
