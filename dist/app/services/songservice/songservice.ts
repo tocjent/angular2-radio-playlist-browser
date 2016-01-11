@@ -2,7 +2,6 @@ import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
 import {Song} from '../../model/song';
 import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
 import {Json} from 'angular2/src/facade/lang';
 
 
@@ -11,8 +10,8 @@ export class SongService {
 
   constructor(private http: Http) {}
 
-  currentlyPlaying(): Observable<Song[]> {
-    return Observable.combineLatest(
+  currentlyPlaying(): Observable<Song[]>[] {
+    return [
       this.localFileSongs(),
       this.tubaPl('Zlote przeboje', 9),
       this.tubaPl('Rock Radio', 8),
@@ -27,7 +26,7 @@ export class SongService {
       this.radioFaMa('Radio FaMa Tomaszów Mazowiecki', 'tomaszow'),
       this.radioFaMa('Radio FaMa Wolomin', 'wolomin'),
       this.radioFaMa('Radio FaMa Slupsk', 'slupsk')
-    ).map(all => [].concat.apply([], all));
+    ];
   }
   
   private localFileSongs(): Observable<Song[]> {
@@ -37,7 +36,7 @@ export class SongService {
   }
   
   private tubaPl(stationName: string, stationId: number): Observable<Song[]> {
-    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 20)
+    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 10)
       .map(res => res.json().slice(0, 1).map(
         r => new Song(
           stationName,
@@ -49,7 +48,7 @@ export class SongService {
   }
   
   private eurozetPl(stationName: string, stationId: string): Observable<Song[]> {
-    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 20)
+    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 10)
       .map(res => {
         const firstParenPos = res.text().indexOf('(') + 1;
         const jsonText = res.text().slice(firstParenPos, -1);
@@ -64,7 +63,7 @@ export class SongService {
   }
   
   private radioFaMa(stationName: string, stationId: string): Observable<Song[]> {
-    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 20)
+    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 10)
       .map(res => {
         const lines = res.text().split('<br />\n');
         const current = lines.filter(line => line.indexOf('gramy: ') === 0).slice(0, 1);
@@ -81,15 +80,13 @@ export class SongService {
   }
   
   private repeatedGet(url: string, intervalSeconds: number): Observable<Response> {
-      const sub = new Subject();
-      const getUrl = () => {
-        this.http.get(url).subscribe(res => {
-          sub.next(res);
-          setTimeout(getUrl, intervalSeconds * 1000);
-        });
-      };
-      getUrl();
-      return sub;
+    return Observable
+      .interval(intervalSeconds * 1000)
+      .startWith(0)
+      .flatMap<Response>(() => this.http.get(url))
+      .distinctUntilChanged(
+        (res1, res2) => res1.text() == res2.text()
+      );
   }
   
   private logErrorAndReturnEmpty(err) {

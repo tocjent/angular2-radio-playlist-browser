@@ -1,0 +1,12 @@
+<div *ngIf="song" class="flipcard card-panel card" [class.flipped]="isFlipped">
+  <div class="flipcard__front teal lighten-2">
+    <div class="row">
+      <div class="col s4">{{song.station}}</div>
+      <div class="col s4">{{song.author}}</div>
+      <div class="col s4">{{song.title}}</div>
+    </div>
+  </div>
+  <div class="flipcard__back orange lighten-2">
+    
+  </div>
+</div>

@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Observable', 'rxjs/Subject', 'angular2/src/facade/lang'], function(exports_1) {
+System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Observable', 'angular2/src/facade/lang'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,7 +8,7 @@ System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Obs
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, song_1, Observable_1, Subject_1, lang_1;
+    var core_1, http_1, song_1, Observable_1, lang_1;
     var SongService;
     return {
         setters:[
@@ -24,9 +24,6 @@ System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Obs
             function (Observable_1_1) {
                 Observable_1 = Observable_1_1;
             },
-            function (Subject_1_1) {
-                Subject_1 = Subject_1_1;
-            },
             function (lang_1_1) {
                 lang_1 = lang_1_1;
             }],
@@ -36,7 +33,22 @@ System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Obs
                     this.http = http;
                 }
                 SongService.prototype.currentlyPlaying = function () {
-                    return Observable_1.Observable.combineLatest(this.localFileSongs(), this.tubaPl('Zlote przeboje', 9), this.tubaPl('Rock Radio', 8), this.tubaPl('Radio Blue FM', 3), this.tubaPl('Radio Tok FM', 10), this.eurozetPl('Radio ZET', 'radiozet'), this.eurozetPl('Radio ZET Chilli', 'zetchilli'), this.eurozetPl('Radio ZET Gold', 'zetgold'), this.eurozetPl('AntyRadio', 'antyradio'), this.eurozetPl('Planeta FM', 'planeta'), this.radioFaMa('Radio FaMa Kielce', 'kielce'), this.radioFaMa('Radio FaMa Tomaszów Mazowiecki', 'tomaszow'), this.radioFaMa('Radio FaMa Wolomin', 'wolomin'), this.radioFaMa('Radio FaMa Slupsk', 'slupsk')).map(function (all) { return [].concat.apply([], all); });
+                    return [
+                        this.localFileSongs(),
+                        this.tubaPl('Zlote przeboje', 9),
+                        this.tubaPl('Rock Radio', 8),
+                        this.tubaPl('Radio Blue FM', 3),
+                        this.tubaPl('Radio Tok FM', 10),
+                        this.eurozetPl('Radio ZET', 'radiozet'),
+                        this.eurozetPl('Radio ZET Chilli', 'zetchilli'),
+                        this.eurozetPl('Radio ZET Gold', 'zetgold'),
+                        this.eurozetPl('AntyRadio', 'antyradio'),
+                        this.eurozetPl('Planeta FM', 'planeta'),
+                        this.radioFaMa('Radio FaMa Kielce', 'kielce'),
+                        this.radioFaMa('Radio FaMa Tomaszów Mazowiecki', 'tomaszow'),
+                        this.radioFaMa('Radio FaMa Wolomin', 'wolomin'),
+                        this.radioFaMa('Radio FaMa Slupsk', 'slupsk')
+                    ];
                 };
                 SongService.prototype.localFileSongs = function () {
                     return this.http.get('/data/songs.json')
@@ -44,12 +56,12 @@ System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Obs
                         .catch(this.logErrorAndReturnEmpty);
                 };
                 SongService.prototype.tubaPl = function (stationName, stationId) {
-                    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 20)
+                    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 10)
                         .map(function (res) { return res.json().slice(0, 1).map(function (r) { return new song_1.Song(stationName, r.artist_name, r.song_title); }); })
                         .catch(this.logErrorAndReturnEmpty);
                 };
                 SongService.prototype.eurozetPl = function (stationName, stationId) {
-                    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 20)
+                    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 10)
                         .map(function (res) {
                         var firstParenPos = res.text().indexOf('(') + 1;
                         var jsonText = res.text().slice(firstParenPos, -1);
@@ -59,7 +71,7 @@ System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Obs
                         .catch(this.logErrorAndReturnEmpty);
                 };
                 SongService.prototype.radioFaMa = function (stationName, stationId) {
-                    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 20)
+                    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 10)
                         .map(function (res) {
                         var lines = res.text().split('<br />\n');
                         var current = lines.filter(function (line) { return line.indexOf('gramy: ') === 0; }).slice(0, 1);
@@ -72,15 +84,11 @@ System.register(['angular2/core', 'angular2/http', '../../model/song', 'rxjs/Obs
                 };
                 SongService.prototype.repeatedGet = function (url, intervalSeconds) {
                     var _this = this;
-                    var sub = new Subject_1.Subject();
-                    var getUrl = function () {
-                        _this.http.get(url).subscribe(function (res) {
-                            sub.next(res);
-                            setTimeout(getUrl, intervalSeconds * 1000);
-                        });
-                    };
-                    getUrl();
-                    return sub;
+                    return Observable_1.Observable
+                        .interval(intervalSeconds * 1000)
+                        .startWith(0)
+                        .flatMap(function () { return _this.http.get(url); })
+                        .distinctUntilChanged(function (res1, res2) { return res1.text() == res2.text(); });
                 };
                 SongService.prototype.logErrorAndReturnEmpty = function (err) {
                     console.log('err', err);
