@@ -14,14 +14,19 @@ import {Song as SongModel} from '../../model/song';
 export class Song {
   @Input() songObservable: Observable<SongModel[]>;
   song: SongModel;
+  isFlipped = false;
 
   constructor() {}
 
   ngOnInit() {
+    const __this = this;
     this.songObservable.subscribe(
       songs => {
-        console.log('binding song', songs);
-        return this.song = songs[0];
+        this.isFlipped = true;
+        setTimeout(() => {
+          this.isFlipped = false;
+          this.song = songs[0];
+        }, 500);
       }
     );
   }

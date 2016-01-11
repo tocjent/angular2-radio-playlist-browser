@@ -37,7 +37,7 @@ export class SongService {
   }
   
   private tubaPl(stationName: string, stationId: number): Observable<Song[]> {
-    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 20)
+    return this.repeatedGet('http://static.fm.tuba.pl/api3/onStation?id=' + stationId + '&limit=1', 10)
       .map(res => res.json().slice(0, 1).map(
         r => new Song(
           stationName,
@@ -49,7 +49,7 @@ export class SongService {
   }
   
   private eurozetPl(stationName: string, stationId: string): Observable<Song[]> {
-    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 20)
+    return this.repeatedGet('http://cors.io/?u=http://rds.eurozet.pl/reader/var/' + stationId + '.json', 10)
       .map(res => {
         const firstParenPos = res.text().indexOf('(') + 1;
         const jsonText = res.text().slice(firstParenPos, -1);
@@ -64,7 +64,7 @@ export class SongService {
   }
   
   private radioFaMa(stationName: string, stationId: string): Observable<Song[]> {
-    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 20)
+    return this.repeatedGet('http://cors.io/?u=http://radiofama.com.pl/rdsk/' + stationId + '.txt', 10)
       .map(res => {
         const lines = res.text().split('<br />\n');
         const current = lines.filter(line => line.indexOf('gramy: ') === 0).slice(0, 1);
