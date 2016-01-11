@@ -81,15 +81,20 @@ export class SongService {
   }
   
   private repeatedGet(url: string, intervalSeconds: number): Observable<Response> {
-      const sub = new Subject();
+      const sub = new Subject<Response>();
       const getUrl = () => {
-        this.http.get(url).subscribe(res => {
-          sub.next(res);
-          setTimeout(getUrl, intervalSeconds * 1000);
-        });
+        this.http.get(url)
+          .subscribe(
+            res => {
+              sub.next(res);
+              setTimeout(getUrl, intervalSeconds * 1000);
+            }
+          );
       };
       getUrl();
-      return sub;
+      return sub.distinctUntilChanged(
+        (res1, res2) => res1.text() == res2.text()
+      );
   }
   
   private logErrorAndReturnEmpty(err) {
