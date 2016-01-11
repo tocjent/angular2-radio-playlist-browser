@@ -39,13 +39,8 @@ System.register(['angular2/core', './services/songservice/songservice', 'rxjs/Ob
                     this.searchParams = new SearchParams();
                     this.searchParamsUpdates = new Subject_1.Subject();
                     var validSong = function (sp) { return function (song) {
-                        if (song.station.toLowerCase().indexOf(sp.station.toLowerCase()) == -1)
-                            return false;
-                        if (song.author.toLowerCase().indexOf(sp.author.toLowerCase()) == -1)
-                            return false;
-                        if (song.title.toLowerCase().indexOf(sp.title.toLowerCase()) == -1)
-                            return false;
-                        return true;
+                        var validAttr = function (attrName) { return song[attrName].toLowerCase().indexOf(sp[attrName].toLowerCase()) > -1; };
+                        return validAttr("station") && validAttr("author") && validAttr("title");
                     }; };
                     Observable_1.Observable.combineLatest(this.searchParamsUpdates, songService.currentlyPlaying()).subscribe(function (_a) {
                         var searchParams = _a[0], songs = _a[1];

@@ -26,7 +26,7 @@ export class Angular2RadioPlaylistApp {
 
   constructor(songService: SongService) {
     const validSong = (sp: SearchParams) => (song: Song) => {
-      const validAttr = attrName => song[attrName].toLowerCase().indexOf(sp[attrName].toLowerCase()) >= -1;
+      const validAttr = attrName => song[attrName].toLowerCase().indexOf(sp[attrName].toLowerCase()) > -1;
       return validAttr("station") && validAttr("author") && validAttr("title");
     };
 
