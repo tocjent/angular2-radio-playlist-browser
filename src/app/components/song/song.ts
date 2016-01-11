@@ -19,14 +19,13 @@ export class Song {
   constructor() {}
 
   ngOnInit() {
-    const __this = this;
     this.songObservable.subscribe(
       songs => {
         this.isFlipped = true;
         setTimeout(() => {
           this.isFlipped = false;
           this.song = songs[0];
-        }, 500);
+        }, 300);
       }
     );
   }

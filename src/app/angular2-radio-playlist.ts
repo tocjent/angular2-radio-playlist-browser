@@ -42,6 +42,8 @@ export class Angular2RadioPlaylistApp {
         songsObservable
       ).map(
         ([searchParams, songs]) => songs.filter(songFilter(searchParams))
+      ).distinctUntilChanged(
+        (res1, res2) => res1.join() == res2.join()
       )
     );
 

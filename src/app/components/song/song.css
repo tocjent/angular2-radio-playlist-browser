@@ -19,8 +19,8 @@
 .flipcard__back {
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
-  -webkit-transition: -webkit-transform 1.3s;
-          transition: transform 1.3s;
+  -webkit-transition: -webkit-transform 0.6s;
+          transition: transform 0.6s;
 }
 
 .flipcard__front {
