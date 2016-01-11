@@ -26,17 +26,23 @@ export class Angular2RadioPlaylistApp {
 
   constructor(songService: SongService) {
     const validSong = (sp: SearchParams) => (song: Song) => {
-      const validAttr = attrName => song[attrName].toLowerCase().indexOf(sp[attrName].toLowerCase()) > -1;
-      return validAttr("station") && validAttr("author") && validAttr("title");
+      const validAttr = attrName => {
+        const songAttr = song[attrName].toLowerCase();
+        const paramAttr = sp[attrName].toLowerCase();
+        return songAttr.indexOf(paramAttr) > -1;
+      };
+      return ["station", "author", "title"]
+        .reduce((acc, el) => acc && validAttr(el), true);
     };
 
     Observable.combineLatest<[SearchParams, Song[]]>(
       this.searchParamsUpdates,
       songService.currentlyPlaying()
     ).subscribe(
-      ([searchParams, songs]) => this.songs = songs.filter(validSong(searchParams))
+      ([searchParams, songs]) => Object.assign(this, {
+        songs: songs.filter(validSong(searchParams))
+      })
     );
-
     this.update();
   }
 
