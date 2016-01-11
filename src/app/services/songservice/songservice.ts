@@ -2,7 +2,6 @@ import {Injectable} from 'angular2/core';
 import {Http, Response} from 'angular2/http';
 import {Song} from '../../model/song';
 import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
 import {Json} from 'angular2/src/facade/lang';
 
 
@@ -81,18 +80,11 @@ export class SongService {
   }
   
   private repeatedGet(url: string, intervalSeconds: number): Observable<Response> {
-      const sub = new Subject<Response>();
-      const getUrl = () => {
-        this.http.get(url)
-          .subscribe(
-            res => {
-              sub.next(res);
-              setTimeout(getUrl, intervalSeconds * 1000);
-            }
-          );
-      };
-      getUrl();
-      return sub.distinctUntilChanged(
+    return Observable
+      .interval(intervalSeconds * 1000)
+      .startWith(0)
+      .flatMap<Response>(() => this.http.get(url))
+      .distinctUntilChanged(
         (res1, res2) => res1.text() == res2.text()
       );
   }
